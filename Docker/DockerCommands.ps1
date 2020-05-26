@@ -4,7 +4,7 @@ docker login -u <username> -p <password> <registry URL>
 #Images
 docker pull <image name>:<image tag>
 docker run -d -p <port>:<port> --name <name> --restart-always --label <label image> -v <volumeMount> --isolation <process>
-docker run -d -p 9000:9000 --name portainer --restart always --label eid.portainer.hideme=true -v \\.\pipe\docker_engine:\\.\pipe\docker_engine -v c:\data\portainer:C:\data --isolation process eidci.azurecr.io/portainer 
+docker run -d -p 9000:9000 --name portainer --restart always --label eid.portainer.hideme=true -v \\.\pipe\docker_engine:\\.\pipe\docker_engine -v c:\data\portainer:C:\data --isolation process $image
 docker tag <source image> <target image>
 
 #Clean
