@@ -25,7 +25,7 @@ git clean -f -d # Remove directories
 Revert Changes to File 
 git checkout <commit_hash> -- <file>
 
-git checkout 767973a7e7843ce64ce46d4e632fbc3825a407df -- Framework/Framework.Connectors.Box
+git checkout 767973a7e7843ce64ce46d4e632fbc3825a407df -- $filePath
 
 ###############
 # Cherry Pick #
@@ -67,7 +67,7 @@ git merge [BranchToMerge]
 
 # ---------- Merge specific files ------- #
 git checkout [Branch]
-git checkout [BranchToMerge] [FileToMerge] # [FileToMerge] = _build/eid-code.azpipeline.yaml
+git checkout [BranchToMerge] [FileToMerge] 
 git status
 git commit -m "Merge code from [BranchToMerge] branch"
 
