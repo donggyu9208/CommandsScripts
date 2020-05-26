@@ -1,0 +1,55 @@
+Param(
+    [Parameter(Mandatory=$true)][string] $subscriptionName,
+    [Parameter(Mandatory=$true)][string] $serviceAppName,
+    [Parameter(Mandatory=$true)][string] $outputPath
+)
+
+#Login to Azure AD
+Login-AzureRmAccount
+
+# Connecting to both AzureRMAccount and AzureAD in a single dialog
+"Connecting to Azure..."
+$rmAccount = Add-AzureRmAccount -SubscriptionName $subscriptionName
+$tenantId = (Get-AzureRmSubscription -SubscriptionName $subscriptionName).TenantId
+
+# Get TenantID and Subscription
+$subscriptionName = $subscriptionName
+$tenantID = (Get-AzureRmSubscription -SubscriptionName $subscriptionName).TenantId
+$subscriptionId = (Get-AzureRmSubscription -SubscriptionName $subscriptionName).Id
+
+# Set environment variables to create an Application in Azure AD
+$appName = "$serviceAppName"
+$homePage = "http://$serviceAppName"
+$idUri = "http://$serviceAppName"
+$secretName = "$serviceAppName"
+
+# Create the Azure AD Application
+$appAAD = New-AzureRmADApplication -DisplayName $appName -HomePage $homePage -IdentifierUris $idUri
+
+# Pause and wait for at least 3 minutes (Allow Azure to provision application)
+"Provisioning the application..."
+Start-Sleep -Seconds 180
+
+# Re-connect to Azure AD (you might be required to do this, so do it anyway)
+Connect-AzureAD
+
+# Create a password credential for the Application.
+$secretValue = New-AzureADApplicationPasswordCredential -CustomKeyIdentifier $secretName -ObjectId $appAAD.ObjectId -EndDate (Get-Date).AddYears(10)
+
+# Create a Service Principal for the application.
+$servicePrincipalObj = New-AzureRmADServicePrincipal -ApplicationId $appAAD.ApplicationId
+
+# Pause and wait for 3 minutes (Allow Azure to provision the service principal for the application).
+"Provisioning the service principal for the application..."
+Start-Sleep -Seconds 180
+
+# Give the Service Principal an Owner permission (access and manage rights scoped at subscription level).
+$role = New-AzureRmRoleAssignment -RoleDefinitionName Owner -ServicePrincipalName $appAAD.ApplicationId.Guid
+
+# Write out the required information to text file for your reference (Secure the secret!)
+Write-Output "Subscription ID:" $subscriptionId | Add-Content "$outputPath\$serviceAppName.txt"
+Write-Output "Tenant ID:" $tenantID | Add-Content "$outputPath\$serviceAppName.txt"
+Write-Output "Application ID:" $appAAD.ApplicationId.Guid | Add-Content "$outputPath\$serviceAppName.txt"
+Write-Output "Secret:" $secretValue.Value | Add-Content "$outputPath\$serviceAppName.txt"
+
+"Done!"
