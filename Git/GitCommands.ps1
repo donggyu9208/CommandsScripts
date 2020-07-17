@@ -71,6 +71,14 @@ git checkout [BranchToMerge] [FileToMerge]
 git status
 git commit -m "Merge code from [BranchToMerge] branch"
 
+########
+# Tags #
+########
+git show <tag>
+git push --delete origin refs/tags/<tagName>
+git checkout tags/<tag> -b <branch>
+git fetch --tags
+
 ##############
 # Submodules #
 ##############
