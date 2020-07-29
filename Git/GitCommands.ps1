@@ -5,6 +5,20 @@ git rm -r --cached .
 git add .
 git commit -m ".gitignore fix"
 
+######################
+# git set postBuffer #
+######################
+git config --global http.postBuffer 157286400
+
+###################
+# Git Credentials #
+###################
+# remove the stored credential from credentials storage
+git config --system unset credential.helper
+
+# enable credentials storage in git
+git config --global credential.helper store
+
 ################
 # Undo Changes #
 # Clean Branch #
