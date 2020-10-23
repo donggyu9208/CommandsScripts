@@ -14,7 +14,7 @@ git config --global http.postBuffer 157286400
 # Git Credentials #
 ###################
 # remove the stored credential from credentials storage
-git config --system unset credential.helper
+git config --system --unset credential.helper
 
 # enable credentials storage in git
 git config --global credential.helper store
@@ -46,6 +46,8 @@ git checkout 767973a7e7843ce64ce46d4e632fbc3825a407df -- $filePath
 ###############
 # ----------- Cherry-pick Specific Commit --------- #
 git cherry-pick [commit]
+git cherry-pick --abort
+git cherry-pick --strategy=recursive -X theirs {Imported_Commit}
 
 ####################
 # Private Registry #
